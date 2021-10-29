@@ -37,4 +37,16 @@ public class ClientController {
         Client clientSaved = clientService.saveClient(client);
         return ResponseEntity.ok(clientSaved);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUserById(@PathVariable Integer id){
+
+        Optional<Client> clientToDelete = clientService.findClientById(id);
+
+        if(clientToDelete.isPresent()) {
+            clientService.deleteClientById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

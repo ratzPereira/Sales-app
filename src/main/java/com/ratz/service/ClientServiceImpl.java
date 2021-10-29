@@ -22,4 +22,8 @@ public class ClientServiceImpl implements ClientService{
     public Client saveClient(Client client) {
         return this.clientRepository.save(client);
     }
+
+    public void deleteClientById(Integer id) {
+        this.clientRepository.deleteById(id);
+    }
 }

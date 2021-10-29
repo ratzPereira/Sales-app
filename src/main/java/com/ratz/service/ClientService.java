@@ -8,4 +8,5 @@ public interface ClientService {
 
     Optional<Client> findClientById(Integer id);
     Client saveClient(Client client);
+    void deleteClientById(Integer id);
 }
