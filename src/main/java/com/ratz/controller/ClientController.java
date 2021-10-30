@@ -5,73 +5,72 @@ import com.ratz.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/client")
 public class ClientController {
 
-    @Autowired
-    private ClientServiceImpl clientService;
+    private final ClientServiceImpl clientService;
+
+    public ClientController(ClientServiceImpl clientService) {
+        this.clientService = clientService;
+    }
 
     @GetMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity getClientById(@PathVariable Integer id) {
+    public Client getClientById(@PathVariable Integer id) {
 
-        Optional<Client> client = clientService.findClientById(id);
-
-        if (!client.isPresent()) {
-            System.out.println("Not Found");
-            return ResponseEntity.notFound().build();
-
-        }
-        System.out.println("Found");
-        return ResponseEntity.ok(client);
+        return clientService.findClientById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Client with the id " + id + " not found.")
+        );
     }
 
     @PostMapping()
-    @ResponseBody
-    public ResponseEntity saveClient(@RequestBody Client client) {
-        Client clientSaved = clientService.saveClient(client);
-        return ResponseEntity.ok(clientSaved);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Client saveClient(@RequestBody Client client) {
+        return clientService.saveClient(client);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUserById(@PathVariable Integer id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserById(@PathVariable Integer id) {
 
-        Optional<Client> clientToDelete = clientService.findClientById(id);
-
-        if (clientToDelete.isPresent()) {
+        clientService.findClientById(id).map(client -> {
             clientService.deleteClientById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+            return client;
+        }).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Client with the id " + id + " not found.")
+        );
+
     }
 
     @PutMapping("{id}")
-    public ResponseEntity updateUserById(@PathVariable Integer id, @RequestBody Client client) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateUserById(@PathVariable Integer id, @RequestBody Client client) {
 
-        return clientService.findClientById(id).map(actualClient -> {
+        clientService.findClientById(id).map(actualClient -> {
             client.setId(actualClient.getId());
             clientService.saveClient(client);
-            return ResponseEntity.noContent().build();
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+            return client;
+        }).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Client with the id " + id + " not found.")
+        );
     }
 
     @GetMapping("/find")
-    public ResponseEntity findClients(Client filter){
+    public List<Client> findClients(Client filter) {
 
-        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher( ExampleMatcher.StringMatcher.CONTAINING );
-        Example example = Example.of(filter,matcher);
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example example = Example.of(filter, matcher);
 
-        List<Client> clients = clientService.findAllClients(example);
-
-        return ResponseEntity.ok(clients);
+        return clientService.findAllClients(example);
     }
 }
 
