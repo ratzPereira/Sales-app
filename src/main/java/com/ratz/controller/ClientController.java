@@ -3,10 +3,13 @@ package com.ratz.controller;
 import com.ratz.entity.Client;
 import com.ratz.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -58,6 +61,17 @@ public class ClientController {
             clientService.saveClient(client);
             return ResponseEntity.noContent().build();
         }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity findClients(Client filter){
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher( ExampleMatcher.StringMatcher.CONTAINING );
+        Example example = Example.of(filter,matcher);
+
+        List<Client> clients = clientService.findAllClients(example);
+
+        return ResponseEntity.ok(clients);
     }
 }
 
