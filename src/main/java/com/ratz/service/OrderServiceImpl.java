@@ -15,21 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-
+    @Autowired
+    private OrderRepository repository;
     @Autowired
     private ClientService clientService;
     @Autowired
     private ProductService productService;
     @Autowired
     private ItemOrderedService itemOrderedService;
-    @Autowired
-    private OrderRepository repository;
+
 
 
     @Override
@@ -57,6 +58,14 @@ public class OrderServiceImpl implements OrderService {
 
         return orderToSave;
     }
+
+
+    @Override
+    public Optional<Order> getOrderDetails(Integer id) {
+      return repository.findByIdFetchItems(id);
+    }
+
+
 
     private List<ItemOrdered> convertItems(Order order, List<ItemOrderedDTO> items) {
         if (items.isEmpty()) {

@@ -6,17 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDetailsDTO {
+public class ItemOrderedDetailsDTO {
 
-    private  Integer id;
-    private String clientName;
-    private BigDecimal total;
-    private String orderDate;
-    private List<ItemOrderedDetailsDTO> items;
+    private String description;
+    private BigDecimal unitPrice;
+    private Integer quantity;
 }
