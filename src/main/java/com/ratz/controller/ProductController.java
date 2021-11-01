@@ -1,6 +1,7 @@
 package com.ratz.controller;
 
 import com.ratz.entity.Product;
+import com.ratz.service.ProductService;
 import com.ratz.service.ProductServiceImpl;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -14,9 +15,9 @@ import java.util.List;
 @RequestMapping("/product")
 public class ProductController {
 
-    private final ProductServiceImpl productService;
+    private ProductService productService;
 
-    public ProductController(ProductServiceImpl productService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 

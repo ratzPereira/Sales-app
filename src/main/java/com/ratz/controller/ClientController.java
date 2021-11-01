@@ -1,6 +1,7 @@
 package com.ratz.controller;
 
 import com.ratz.entity.Client;
+import com.ratz.service.ClientService;
 import com.ratz.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -18,9 +19,9 @@ import java.util.Optional;
 @RequestMapping("/client")
 public class ClientController {
 
-    private final ClientServiceImpl clientService;
+    private ClientService clientService;
 
-    public ClientController(ClientServiceImpl clientService) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
     }
 
