@@ -16,7 +16,7 @@ public class Client {
     private Integer id;
 
     @Column(name = "name", length = 100)
-    @NotEmpty(message = "Name cant be empty")
+    @NotEmpty(message = "{field.name}")
     private String name;
 
     @JsonIgnore
