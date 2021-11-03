@@ -4,8 +4,10 @@ package com.ratz.controller;
 import com.ratz.dto.ItemOrderedDetailsDTO;
 import com.ratz.dto.OrderDTO;
 import com.ratz.dto.OrderDetailsDTO;
+import com.ratz.dto.OrderStatusChangeDTO;
 import com.ratz.entity.ItemOrdered;
 import com.ratz.entity.Order;
+import com.ratz.enums.OrderStatus;
 import com.ratz.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,4 +63,14 @@ public class OrderController {
                 .quantity(item.getQuantity()).build()
         ).collect(Collectors.toList());
     }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateStatus(@RequestBody OrderStatusChangeDTO dto,
+                             @PathVariable Integer id) {
+
+        String newStatus = dto.getNewStatus();
+        orderService.updateOrderStatus(id, OrderStatus.valueOf(newStatus));
+    }
+
 }

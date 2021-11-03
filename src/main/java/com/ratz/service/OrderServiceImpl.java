@@ -8,6 +8,7 @@ import com.ratz.entity.Order;
 import com.ratz.entity.Product;
 import com.ratz.enums.OrderStatus;
 import com.ratz.exception.CustomException;
+import com.ratz.exception.OrderNotFoundException;
 import com.ratz.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +87,15 @@ public class OrderServiceImpl implements OrderService {
             itemOrdered.setProduct(product);
             return itemOrdered;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderStatus(Integer id, OrderStatus status) {
+        repository.findById(id)
+                .map(order -> {
+                   order.setStatus(status);
+                   return repository.save(order);
+                }).orElseThrow(() -> new OrderNotFoundException());
     }
 }

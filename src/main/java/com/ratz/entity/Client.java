@@ -3,6 +3,7 @@ package com.ratz.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
@@ -15,6 +16,7 @@ public class Client {
     private Integer id;
 
     @Column(name = "name", length = 100)
+    @NotEmpty(message = "Name cant be empty")
     private String name;
 
     @JsonIgnore

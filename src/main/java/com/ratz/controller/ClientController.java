@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class ClientController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Client saveClient(@RequestBody Client client) {
+    public Client saveClient(@RequestBody @Valid Client client) {
         return clientService.saveClient(client);
     }
 
