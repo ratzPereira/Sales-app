@@ -6,6 +6,7 @@ import com.ratz.entity.Client;
 import com.ratz.entity.ItemOrdered;
 import com.ratz.entity.Order;
 import com.ratz.entity.Product;
+import com.ratz.enums.OrderStatus;
 import com.ratz.exception.CustomException;
 import com.ratz.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
         orderToSave.setTotal(order.getTotal());
         orderToSave.setDataOrder(LocalDate.now());
         orderToSave.setClient(client);
+        orderToSave.setStatus(OrderStatus.IN_PREPARATION);
 
         System.out.println(order.getItemList());
 

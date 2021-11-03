@@ -1,5 +1,7 @@
 package com.ratz.entity;
 
+import com.ratz.enums.OrderStatus;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,6 +25,9 @@ public class Order {
 
     @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "orders")
     private List<ItemOrdered> items;
@@ -62,6 +67,14 @@ public class Order {
 
     public List<ItemOrdered> getItems() {
         return items;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     public void setItems(List<ItemOrdered> items) {

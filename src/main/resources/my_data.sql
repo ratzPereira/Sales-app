@@ -13,7 +13,8 @@ CREATE TABLE ORDER (
                         ID INTEGER PRIMARY KEY AUTO_INCREMENT,
                         CLIENT_ID INTEGER REFERENCES CLIENT (ID),
                         ORDER_DATE TIMESTAMP,
-                        TOTAL NUMERIC(20,2)
+                        TOTAL NUMERIC(20,2),
+                        STATUS VARCHAR (100)
 );
 
 CREATE TABLE ITEM_ORDERED (
