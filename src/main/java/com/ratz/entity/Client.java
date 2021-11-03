@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
-@Table( name = "client" )
+@Table(name = "client")
 public class Client {
 
     @Id
@@ -20,7 +20,7 @@ public class Client {
     private String name;
 
     @JsonIgnore
-    @OneToMany( mappedBy = "client" , fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     private Set<Order> orders;
 
     public Integer getId() {

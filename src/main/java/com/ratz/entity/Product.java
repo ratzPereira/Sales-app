@@ -1,6 +1,8 @@
 package com.ratz.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -13,9 +15,11 @@ public class Product {
     private Integer id;
 
     @Column(name = "description")
+    @NotEmpty(message = "Product description should not be empty")
     private String description;
 
     @Column(name = "unit_price")
+    @NotNull(message = "Product should have a price")
     private BigDecimal unitPrice;
 
     public Integer getId() {
