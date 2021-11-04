@@ -1,7 +1,10 @@
 package com.ratz.config;
 
 
+import com.ratz.service.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UserServiceImpl service;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -20,17 +26,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder())
-                .withUser("Admin")
-                .password(passwordEncoder()
-                .encode("12345"))
-                .roles("ADMIN");
+        auth.userDetailsService(service).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers("/client/**").authenticated()
-                .and().formLogin();
+        http.csrf().disable().authorizeRequests()
+                .antMatchers("/client/**").hasAnyRole("USER","ADMIN")
+                .antMatchers("/product/**").hasRole("ADMIN")
+                .antMatchers("/order/**").hasAnyRole("USER","ADMIN")
+                .antMatchers(HttpMethod.POST, "/user/**").permitAll().anyRequest().authenticated()
+                .and().httpBasic();
     }
 }
