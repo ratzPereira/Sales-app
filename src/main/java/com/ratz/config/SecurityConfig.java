@@ -1,6 +1,8 @@
 package com.ratz.config;
 
 
+import com.ratz.security.JwtAuthFilter;
+import com.ratz.security.JwtService;
 import com.ratz.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +11,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @EnableWebSecurity
@@ -18,6 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserServiceImpl service;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -36,6 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/product/**").hasRole("ADMIN")
                 .antMatchers("/order/**").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.POST, "/user/**").permitAll().anyRequest().authenticated()
-                .and().httpBasic();
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and().addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public OncePerRequestFilter jwtFilter(){
+        return new JwtAuthFilter(jwtService,service);
     }
 }
