@@ -4,6 +4,7 @@ package com.ratz.config;
 import com.ratz.security.JwtAuthFilter;
 import com.ratz.security.JwtService;
 import com.ratz.service.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

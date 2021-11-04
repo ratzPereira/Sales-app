@@ -2,6 +2,7 @@ package com.ratz.service;
 
 
 import com.ratz.entity.User;
+import com.ratz.exception.WrongPasswordException;
 import com.ratz.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +15,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private PasswordEncoder encoder;
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private PasswordEncoder encoder;
+
+
+    public UserDetails authUser(User user){
+        UserDetails userDetails = loadUserByUsername(user.getUserName());
+        boolean isPasswordCorrect = encoder.matches(user.getPassword(), userDetails.getPassword());
+
+        if (isPasswordCorrect) return userDetails;
+        throw new WrongPasswordException("Your password or username are incorrect");
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -16,7 +16,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    @Value("${security.jwt.expiration}")
+    @Value("${security.jwt.expire}")
     private String expirationTime;
 
     @Value("${security.jwt.secret-key}")
@@ -50,7 +50,7 @@ public class JwtService {
             Date expirationDate = claims.getExpiration();
             LocalDateTime date = expirationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-            return LocalDateTime.now().isAfter(date);
+            return !LocalDateTime.now().isAfter(date);
 
         }catch (Exception e){
             return false;
