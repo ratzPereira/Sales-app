@@ -3,6 +3,7 @@ package com.ratz.controller;
 import com.ratz.entity.Client;
 import com.ratz.service.ClientService;
 import com.ratz.service.ClientServiceImpl;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/client")
+@Api("Api Clients")
 public class ClientController {
 
     private ClientService clientService;
@@ -27,7 +29,9 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public Client getClientById(@PathVariable Integer id) {
+    @ApiOperation("Get client details")
+    @ApiResponses({@ApiResponse(code = 200,message = "Client found."), @ApiResponse(code = 404, message = "Client not found")})
+    public Client getClientById(@PathVariable @ApiParam("Client id") Integer id) {
 
         return clientService.findClientById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Client with the id " + id + " not found.")
@@ -36,6 +40,8 @@ public class ClientController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Save new Client")
+    @ApiResponses({@ApiResponse(code = 201, message = "Client Saved."), @ApiResponse(code = 400, message = "Validation Error")})
     public Client saveClient(@RequestBody @Valid Client client) {
         return clientService.saveClient(client);
     }
